@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import CreateQuizForm from '@/components/Quiz/CreateQuizForm';
-import QuizList from '@/components/Quiz/QuizList';
+import CreateQuizForm from '../components/Quiz/CreateQuizForm';
+import QuizList from '../components/Quiz/QuizList';
 
 export default function Admin() {
   const [showForm, setShowForm] = useState(false);

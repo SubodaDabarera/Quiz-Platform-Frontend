@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {axiosRequest} from '../utils/api'
 
 interface LoginForm {
   email: string;
@@ -13,7 +13,7 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const res = await axios.post('/api/auth/login', data);
+      const res = await axiosRequest.post('/api/auth/login', data)
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.role);
       navigate('/');

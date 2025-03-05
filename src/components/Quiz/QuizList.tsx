@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Quiz} from '@/types'
-import LoadingSpinner from '@/components/LoadingSpinner'
-import ErrorAlert from '@/components/ErrorAlert'
+import {Quiz} from '../../types'
+import LoadingSpinner from '../LoadingSpinner'
+import ErrorAlert from '../ErrorAlert'
 
 export default function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
