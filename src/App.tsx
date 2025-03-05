@@ -3,8 +3,8 @@ import { SocketProvider } from './contexts/SocketContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-// import Admin from './pages/Admin';
-// import QuizRoom from './pages/QuizRoom';
+import Admin from './pages/Admin';
+import QuizRoom from './pages/QuizRoom';
 
 export const router = createBrowserRouter([
   {
@@ -19,12 +19,12 @@ export const router = createBrowserRouter([
     path: '/register',
     element: <Register />,
   },
-  // {
-  //   path: '/admin',
-  //   element: <SocketProvider><Admin /></SocketProvider>,
-  // },
-  // {
-  //   path: '/quiz/:quizId',
-  //   element: <SocketProvider><QuizRoom /></SocketProvider>,
-  // },
+  {
+    path: '/admin',
+    element: <SocketProvider><Admin /></SocketProvider>,
+  },
+  {
+    path: '/quiz/:quizId',
+    element: <SocketProvider><QuizRoom /></SocketProvider>,
+  },
 ]);
