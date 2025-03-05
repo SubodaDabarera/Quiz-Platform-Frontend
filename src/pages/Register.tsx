@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {axiosRequest} from '../utils/api'
 
 interface RegisterForm {
     username: string;
@@ -15,12 +16,12 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterForm) => {
     try {
-      const res = await axios.post('/api/auth/login', data);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', res.data.role);
+      // const res = await axios.post('/api/auth/login', data);
+      const res = await axiosRequest.post('/api/auth/register', data)
+      localStorage.setItem('token', res?.data?.token);
       navigate('/');
     } catch (error) {
-      alert('Login failed');
+      alert('Registration failed');
     }
   };
 
@@ -29,9 +30,21 @@ export default function Register() {
       <h1 className="text-2xl font-bold mb-6">Login</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input
+          {...register('username')}
+          type="text"
+          placeholder="Username"
+          className="w-full p-2 border rounded"
+        />
+        <input
           {...register('email')}
           type="email"
           placeholder="Email"
+          className="w-full p-2 border rounded"
+        />
+        <input
+          {...register('role')}
+          type="text"
+          placeholder="Role"
           className="w-full p-2 border rounded"
         />
         <input
@@ -44,7 +57,7 @@ export default function Register() {
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
-          Login
+          Register
         </button>
       </form>
     </div>

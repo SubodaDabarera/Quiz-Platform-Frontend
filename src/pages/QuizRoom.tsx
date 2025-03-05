@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSocket } from '@/contexts/SocketContext';
-import { Player } from '@/types';
+// import { useSocket } from '@/contexts/SocketContext';
+import {useSocket} from '../contexts/SocketContext'
+import { Player } from '../types';
 
 export default function QuizRoom() {
   const { quizId } = useParams();
