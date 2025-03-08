@@ -17,6 +17,9 @@ function useAuth() {
 
   const registerUser = async (data: RegisterForm) => {
     const res = await axiosRequest.post("/api/auth/register", data);
+
+    localStorage.setItem("token", res.data.token);
+
     return res.data;
   };
 

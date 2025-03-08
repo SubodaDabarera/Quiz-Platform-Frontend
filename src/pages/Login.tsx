@@ -12,7 +12,7 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const user = await login(data)
+      await login(data)
       navigate("/");
     } catch (error) {
       alert("Login failed");
