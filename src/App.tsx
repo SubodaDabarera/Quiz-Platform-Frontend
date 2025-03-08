@@ -8,6 +8,8 @@ import QuizRoom from "./pages/QuizRoom";
 import Navbar from "./components/Navbar";
 import LandingPage from "./pages/LandingPage";
 import AuthProvider from "./contexts/AuthContext";
+import { UserTypes } from "./enums/userTypes";
+import ProtectedRoute from "./utils/ProtectedRoute ";
 
 const Root = () => (
   <>
@@ -28,17 +30,9 @@ export const router = createBrowserRouter([
         element: <LandingPage />,
       },
       {
-        path: '/dashboard',
-        element: <Dashboard />
+        path: "/dashboard",
+        element: <Dashboard />,
       },
-      // {
-      //   path: "/",
-      //   element: (
-      //     <SocketProvider>
-      //       <Dashboard />
-      //     </SocketProvider>
-      //   ),
-      // },
       {
         path: "/login",
         element: <Login />,
@@ -50,9 +44,11 @@ export const router = createBrowserRouter([
       {
         path: "/admin",
         element: (
-          <SocketProvider>
-            <Admin />
-          </SocketProvider>
+          <ProtectedRoute allowedRoles = {[UserTypes.Admin]}>
+            <SocketProvider>
+              <Admin />
+            </SocketProvider>
+          </ProtectedRoute >
         ),
       },
       {

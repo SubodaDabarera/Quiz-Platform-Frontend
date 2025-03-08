@@ -12,8 +12,7 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterForm) => {
     try {
-      const user : any = await registerUser(data)
-      localStorage.setItem("token", user.token);
+      await registerUser(data)
       navigate("/");
     } catch (error) {
       alert("Registration failed");
