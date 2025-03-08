@@ -1,21 +1,18 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosRequest } from "../utils/api";
+import { LoginForm } from "../types";
+import useAuth from "../hooks/useAuth";
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
 
 export default function Login() {
   const { register, handleSubmit } = useForm<LoginForm>();
   const navigate = useNavigate();
+  const {login} = useAuth()
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const res = await axiosRequest.post("/api/auth/login", data);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
+      const user = await login(data)
       navigate("/");
     } catch (error) {
       alert("Login failed");

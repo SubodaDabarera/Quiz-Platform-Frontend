@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
-import { axiosRequest } from '../utils/api';
+import useAuth from '../hooks/useAuth';
+import {UserTypes} from '../enums/userTypes'
 
 export default function Navbar() {
-  const isAuthenticated = !!localStorage.getItem('token');
-  const isAdmin = localStorage.getItem('role') === 'admin';
+  const {getToken, logout} = useAuth()
+  const user = getToken()
+
+  const isAuthenticated = !!user?.token;
+  const isAdmin = user?.role === UserTypes.Admin
 
   const handleLogout = async () => {
     try {
-      await axiosRequest.post('/api/auth/logout');
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
+      await logout()
       window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);

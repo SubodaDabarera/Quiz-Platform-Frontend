@@ -1,54 +1,68 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
-import { SocketProvider } from './contexts/SocketContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Admin from './pages/Admin';
-import QuizRoom from './pages/QuizRoom';
-import Navbar from './components/Navbar';
-import LandingPage from './pages/LandingPage'
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { SocketProvider } from "./contexts/SocketContext";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
+import QuizRoom from "./pages/QuizRoom";
+import Navbar from "./components/Navbar";
+import LandingPage from "./pages/LandingPage";
+import AuthProvider from "./contexts/AuthContext";
 
 const Root = () => (
   <>
-    <Navbar />
-    <Outlet/>
+    <AuthProvider>
+      <Navbar />
+      <Outlet />
+    </AuthProvider>
   </>
 );
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Root/>,
-    children:[
+    path: "/",
+    element: <Root />,
+    children: [
       {
         index: true,
-        element: <LandingPage/>
+        element: <LandingPage />,
       },
       {
         path: '/dashboard',
         element: <Dashboard />
       },
+      // {
+      //   path: "/",
+      //   element: (
+      //     <SocketProvider>
+      //       <Dashboard />
+      //     </SocketProvider>
+      //   ),
+      // },
       {
-        path: '/',
-        element: <SocketProvider><Dashboard /></SocketProvider>,
-      },
-      {
-        path: '/login',
+        path: "/login",
         element: <Login />,
       },
       {
-        path: '/register',
+        path: "/register",
         element: <Register />,
       },
       {
-        path: '/admin',
-        element: <SocketProvider><Admin /></SocketProvider>,
+        path: "/admin",
+        element: (
+          <SocketProvider>
+            <Admin />
+          </SocketProvider>
+        ),
       },
       {
-        path: '/quiz/:quizId',
-        element: <SocketProvider><QuizRoom /></SocketProvider>,
+        path: "/quiz/:quizId",
+        element: (
+          <SocketProvider>
+            <QuizRoom />
+          </SocketProvider>
+        ),
       },
-    ]
-  }
- 
+    ],
+  },
 ]);

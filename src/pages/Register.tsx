@@ -2,23 +2,18 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { axiosRequest } from "../utils/api";
-
-interface RegisterForm {
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-}
+import { RegisterForm } from "../types";
+import useAuth from "../hooks/useAuth";
 
 export default function Register() {
   const { register, handleSubmit } = useForm<RegisterForm>();
   const navigate = useNavigate();
+  const {registerUser} = useAuth()
 
   const onSubmit = async (data: RegisterForm) => {
     try {
-      // const res = await axios.post('/api/auth/login', data);
-      const res = await axiosRequest.post("/api/auth/register", data);
-      localStorage.setItem("token", res?.data?.token);
+      const user : any = await registerUser(data)
+      localStorage.setItem("token", user.token);
       navigate("/");
     } catch (error) {
       alert("Registration failed");
