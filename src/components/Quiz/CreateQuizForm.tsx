@@ -2,6 +2,7 @@ import { useForm, FieldValues } from 'react-hook-form';
 import axios from 'axios';
 import { Question } from '@/types';
 import { useState } from 'react';
+import useQuiz from '../../hooks/useQuiz';
 
 interface CreateQuizFormProps {
   onSuccess: () => void;
@@ -11,6 +12,7 @@ export default function CreateQuizForm({ onSuccess }: CreateQuizFormProps) {
   const { register, handleSubmit, control } = useForm();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [error, setError] = useState('');
+  const {createQuiz} = useQuiz()
 
   const addQuestion = () => {
     setQuestions([...questions, {
@@ -23,15 +25,7 @@ export default function CreateQuizForm({ onSuccess }: CreateQuizFormProps) {
 
   const onSubmit = async (data: FieldValues) => {
     try {
-      await axios.post('/api/quiz', {
-        title: data.title,
-        description: data.description,
-        questions
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      await createQuiz(data, questions)
       onSuccess();
     } catch (err) {
       setError('Failed to create quiz');

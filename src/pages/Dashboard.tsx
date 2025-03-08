@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import useQuiz from '../hooks/useQuiz';
 
 interface Quiz {
   _id: string;
@@ -11,8 +12,14 @@ interface Quiz {
 export default function Dashboard() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
+  const {getAllQuizes} = useQuiz()
+
   useEffect(() => {
-    axios.get('/api/quiz').then(res => setQuizzes(res.data));
+    const getting = async() => {
+      const quiz = await getAllQuizes()
+      setQuizzes(quiz)
+    }
+    getting()
   }, []);
 
   return (
