@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
         path: "/quiz/:quizId",
         element: (
           <SocketProvider>
-            <QuizRoom />
+            <QuizRoom/>
           </SocketProvider>
         ),
       },
