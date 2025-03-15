@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import { useSocket } from '@/contexts/SocketContext';
 import {useSocket} from '../contexts/SocketContext'
 import { Player } from '../types';
 
@@ -11,35 +10,62 @@ export default function QuizRoom() {
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [options, setOptions] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   useEffect(() => {
     if (!socket || !quizId) return;
 
+    let countdownInterval: NodeJS.Timeout;
+
     const username = localStorage.getItem('username') || 'Anonymous';
     socket.emit('joinQuiz', quizId, username);
 
-    socket.on('questionUpdate', (question: string, options: string[], timeLimit: number) => {
-      setCurrentQuestion(question);
-      setOptions(options);
-      setTimeLeft(timeLimit);
+    // socket.on('questionUpdate', (question: string, options: string[], timeLimit: number) => {
+    //   setCurrentQuestion(question);
+    //   setOptions(options);
+    //   setTimeLeft(timeLimit);
+    // });
+
+    socket.on('questionUpdate', (data: { 
+      text: string, 
+      options: string[], 
+      timeLimit: number 
+    }) => {
+      setCurrentQuestion(data.text);
+      setOptions(data.options);
+      setTimeLeft(data.timeLimit);
+  
+      // Start countdown timer
+      countdownInterval = setInterval(() => {
+        setTimeLeft(prev => Math.max(0, prev - 1));
+      }, 1000);
     });
 
     socket.on('scoreUpdate', (updatedPlayers: Player[]) => {
-      setPlayers(updatedPlayers.sort((a, b) => b.score - a.score));
+      setPlayers(updatedPlayers);
     });
 
     return () => {
       socket.off('questionUpdate');
       socket.off('scoreUpdate');
+      clearInterval(countdownInterval);
     };
   }, [socket, quizId]);
 
   const handleAnswer = (answer: string) => {
-    socket?.emit('submitAnswer', quizId, answer);
+    // socket?.emit('submitAnswer', quizId, answer);
+
+    if (!selectedAnswer) {
+      setSelectedAnswer(answer);
+      socket?.emit('submitAnswer', quizId, answer);
+      // Disable further selections
+      setTimeout(() => setSelectedAnswer(null), 3000); 
+    }
   };
 
   return (
     <div className="container mx-auto p-4">
+      Here it is
       <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{currentQuestion}</h2>
@@ -53,7 +79,17 @@ export default function QuizRoom() {
             <button
               key={option}
               onClick={() => handleAnswer(option)}
-              className="p-4 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors text-left"
+              className={`p-4 rounded-lg text-left transition-all ${
+                selectedAnswer === option 
+                  ? 'bg-blue-500 text-white scale-105' 
+                  : 'bg-blue-100 hover:bg-blue-200'
+              } ${
+                //@ts-ignore
+                selectedAnswer && option === currentQuestion?.correctAnswer 
+                  ? 'ring-2 ring-green-500'
+                  : ''
+              }`}
+              disabled={!!selectedAnswer}
             >
               {option}
             </button>
