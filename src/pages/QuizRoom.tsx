@@ -74,7 +74,7 @@ export default function QuizRoom() {
     if (!selectedAnswer) {
       setSelectedAnswer(answer);
       socket?.emit("submitAnswer", quizId, answer);
-      setTimeout(() => setSelectedAnswer(null), timeLeft*1000);
+      setTimeout(() => setSelectedAnswer(null), timeLeft * 1000);
     }
   };
 
@@ -91,8 +91,17 @@ export default function QuizRoom() {
         }}
       >
         {isLastQuestion && timeLeft == 0 ? (
-          <div className="text-red-600 border p-4 text-center">
-            End of questions
+          <div className="flex flex-col justify-between">
+            <div className="text-gray-500 border p-4 text-center">
+              End of questions
+            </div>
+
+            <div className="flex justify-center m-4 py-4 border-2 border-yellow-400 text-center">
+              Won by :
+              {players.length && (
+                <div className="font-bold ms-4">{players[0].username}</div>
+              )}
+            </div>
           </div>
         ) : (
           <>
