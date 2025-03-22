@@ -1,18 +1,17 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { axiosRequest } from "../utils/api";
 import { RegisterForm } from "../types";
+import { Roles } from "../enums/userRoles";
 import useAuth from "../hooks/useAuth";
 
 export default function Register() {
   const { register, handleSubmit } = useForm<RegisterForm>();
   const navigate = useNavigate();
-  const {registerUser} = useAuth()
+  const { registerUser } = useAuth();
 
   const onSubmit = async (data: RegisterForm) => {
     try {
-      await registerUser(data)
+      await registerUser(data);
       navigate("/");
     } catch (error) {
       alert("Registration failed");
@@ -35,12 +34,16 @@ export default function Register() {
           placeholder="Email"
           className="w-full p-2 border rounded"
         />
-        <input
-          {...register("role")}
-          type="text"
-          placeholder="Role"
+        <select
+          defaultValue={Roles[1].value}
           className="w-full p-2 border rounded"
-        />
+        >
+          {Roles.map((item) => (
+            <option key={item.value} className="w-full p-1">
+              {item.title}
+            </option>
+          ))}
+        </select>
         <input
           {...register("password")}
           type="password"
