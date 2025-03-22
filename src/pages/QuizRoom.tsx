@@ -13,6 +13,7 @@ export default function QuizRoom() {
   const [options, setOptions] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [isLastQuestion, setIsLastQuestion] = useState(false);
 
   const [quizStarted, setQuizStarted] = useState(false);
   const [showStartButton, setShowStartButton] = useState(false);
@@ -25,20 +26,25 @@ export default function QuizRoom() {
 
     socket.on(
       "questionUpdate",
-      (data: { text: string; options: string[]; timeLimit: number }) => {
+      (data: {
+        text: string;
+        options: string[];
+        timeLimit: number;
+        isLastQuestion: boolean;
+      }) => {
+        setIsLastQuestion(data.isLastQuestion);
         setQuizStarted(true);
         setCurrentQuestion(data.text);
         setOptions(data.options);
         setTimeLeft(data.timeLimit);
 
         //Clear any existing interval first
-        if(intervalRef.current){
-          clearInterval(intervalRef.current)
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
         }
 
         // Start new countdown timer
         intervalRef.current = setInterval(() => {
-          console.log("executing");
           setTimeLeft((prev) => Math.max(0, prev - 1));
         }, 1000);
       }
@@ -68,7 +74,7 @@ export default function QuizRoom() {
     if (!selectedAnswer) {
       setSelectedAnswer(answer);
       socket?.emit("submitAnswer", quizId, answer);
-      setTimeout(() => setSelectedAnswer(null), 3000);
+      setTimeout(() => setSelectedAnswer(null), timeLeft*1000);
     }
   };
 
@@ -78,43 +84,60 @@ export default function QuizRoom() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">{currentQuestion}</h2>
-          <div className="text-xl font-semibold text-blue-500">
-            Time Left: {timeLeft}s
-          </div>
-        </div>
-
-        {quizStarted ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {options.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleAnswer(option)}
-                className={`p-4 rounded-lg text-left transition-all ${
-                  selectedAnswer === option
-                    ? "bg-blue-500 text-white scale-105"
-                    : "bg-blue-100 hover:bg-blue-200"
-                } ${
-                  //@ts-ignore
-                  selectedAnswer && option === currentQuestion?.correctAnswer
-                    ? "ring-2 ring-green-500"
-                    : ""
-                }`}
-                disabled={!!selectedAnswer}
-              >
-                {option}
-              </button>
-            ))}
+      <div
+        className="p-6 mb-6 bg-white rounded-lg shadow-lg"
+        style={{
+          minHeight: "30vh",
+        }}
+      >
+        {isLastQuestion && timeLeft == 0 ? (
+          <div className="text-red-600 border p-4 text-center">
+            End of questions
           </div>
         ) : (
-          <button
-            className="bg-green-600 p-2 text-white"
-            onClick={handleStartQuiz}
-          >
-            Start Quiz
-          </button>
+          <>
+            {quizStarted ? (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold">{currentQuestion}</h2>
+                  <div className="text-xl font-semibold text-blue-500">
+                    Time Left: {timeLeft}s
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {options.map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => handleAnswer(option)}
+                      className={`p-4 rounded-lg text-left transition-all ${
+                        selectedAnswer === option
+                          ? "bg-blue-500 text-white scale-105"
+                          : "bg-blue-100 hover:bg-blue-200"
+                      } ${
+                        //@ts-ignore
+                        selectedAnswer &&
+                        option === currentQuestion?.correctAnswer
+                          ? "ring-2 ring-green-500"
+                          : ""
+                      }`}
+                      disabled={!!selectedAnswer}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center h-full w-full">
+                <button
+                  className="bg-green-600 p-2 text-white"
+                  onClick={handleStartQuiz}
+                >
+                  Start Quiz
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
