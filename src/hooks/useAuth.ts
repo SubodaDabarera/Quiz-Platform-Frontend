@@ -17,10 +17,12 @@ function useAuth() {
   };
 
   const registerUser = async (data: RegisterForm) => {
-    const res = await axiosRequest.post("/api/auth/register", data);
+    const res:any = await axiosRequest.post("/api/auth/register", data);
 
     localStorage.setItem("token", res.data.token);
-
+    localStorage.setItem("role", res.data.role);
+    localStorage.setItem("username", res.data.username)
+    setUser({ ...user, token: res.data.token, role: res.data.role });
     return res.data;
   };
 
