@@ -4,6 +4,7 @@ import { axiosRequest } from "../utils/api";
 import React from "react";
 
 function useAuth() {
+  //@ts-ignore
   const { user, setUser } = useAuthContext();
 
   const login = async (data: LoginForm) => {

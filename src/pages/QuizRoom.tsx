@@ -122,12 +122,6 @@ export default function QuizRoom() {
                         selectedAnswer === option
                           ? "bg-blue-500 text-white scale-105"
                           : "bg-blue-100 hover:bg-blue-200"
-                      } ${
-                        //@ts-ignore
-                        selectedAnswer &&
-                        option === currentQuestion?.correctAnswer
-                          ? "ring-2 ring-green-500"
-                          : ""
                       }`}
                       disabled={!!selectedAnswer}
                     >
