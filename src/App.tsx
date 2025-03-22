@@ -44,18 +44,16 @@ export const router = createBrowserRouter([
       {
         path: "/admin",
         element: (
-          <ProtectedRoute allowedRoles = {[UserTypes.Admin]}>
-            <SocketProvider>
-              <Admin />
-            </SocketProvider>
-          </ProtectedRoute >
+          <ProtectedRoute allowedRoles={[UserTypes.Admin]}>
+            <Admin />
+          </ProtectedRoute>
         ),
       },
       {
         path: "/quiz/:quizId",
         element: (
           <SocketProvider>
-            <QuizRoom/>
+            <QuizRoom />
           </SocketProvider>
         ),
       },
