@@ -35,11 +35,12 @@ export default function Register() {
           className="w-full p-2 border rounded"
         />
         <select
+          {...register("role")}
           defaultValue={Roles[1].value}
           className="w-full p-2 border rounded"
         >
           {Roles.map((item) => (
-            <option key={item.value} className="w-full p-1">
+            <option key={item.value} value={item.value} className="w-full p-1">
               {item.title}
             </option>
           ))}
