@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const BASE_URL = ""
+const BASE_URL = "https://quiz-platform-backend-production.up.railway.app"
 
 // Create axios instance with base configuration
 const api = axios.create({
