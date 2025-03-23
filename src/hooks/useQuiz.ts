@@ -23,7 +23,9 @@ function useQuiz() {
     });
   };
 
-  const deleteQuiz = () => {};
+  const deleteQuiz = async (quizId: string) => {
+    await axiosRequest.delete(`/api/quiz/${quizId}`);
+  };
 
   return { getAllQuizes, createQuiz, deleteQuiz };
 }

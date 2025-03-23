@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 
 const SocketContext = createContext<Socket | null>(null);
 
-const VITE_API_URL = "http://localhost:5000"
+const VITE_API_URL = "https://quiz-platform-backend-production.up.railway.app"
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);

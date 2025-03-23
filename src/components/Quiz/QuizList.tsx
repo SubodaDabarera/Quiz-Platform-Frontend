@@ -1,21 +1,24 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import {Quiz} from '../../types'
-import LoadingSpinner from '../LoadingSpinner'
-import ErrorAlert from '../ErrorAlert'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Quiz } from "../../types";
+import LoadingSpinner from "../LoadingSpinner";
+import ErrorAlert from "../ErrorAlert";
+import useQuiz from "../../hooks/useQuiz";
 
 export default function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+
+  const { getAllQuizes, deleteQuiz } = useQuiz();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const res = await axios.get('/api/quiz');
-        setQuizzes(res.data);
+        const res = await getAllQuizes();
+        setQuizzes(res);
       } catch (err) {
-        setError('Failed to load quizzes');
+        setError("Failed to load quizzes");
       } finally {
         setLoading(false);
       }
@@ -25,14 +28,10 @@ export default function QuizList() {
 
   const handleDelete = async (quizId: string) => {
     try {
-      await axios.delete(`/api/quiz/${quizId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      setQuizzes(quizzes.filter(quiz => quiz._id !== quizId));
+      await deleteQuiz(quizId);
+      setQuizzes(quizzes.filter((quiz) => quiz._id !== quizId));
     } catch (err) {
-      setError('Failed to delete quiz');
+      setError("Failed to delete quiz");
     }
   };
 
@@ -41,7 +40,7 @@ export default function QuizList() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {quizzes.map(quiz => (
+      {quizzes.map((quiz) => (
         <div
           key={quiz._id}
           className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
